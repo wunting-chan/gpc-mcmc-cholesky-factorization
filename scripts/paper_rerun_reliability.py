@@ -10,9 +10,10 @@ Usage:
     python scripts/paper_rerun_reliability.py --seed 1
     python scripts/paper_rerun_reliability.py --run-dir ... --out-dir ...
 
-Reads   <run-dir>/<dataset>/exp{1,2}_seed<N>_preds.npz
-Writes  <out-dir>/reliability_<dataset>.png   (SVGP vs RPChol+HMC overlaid)
-        <out-dir>/reliability_summary.csv     (per-bin numbers behind the plots)
+Reads   <run-dir>/<dataset>/exp{1,1c,2}_seed<N>_preds.npz          (--split test)
+        <run-dir>/<dataset>/exp{1,1c,2}_valid_seed<N>_preds.npz    (--split valid)
+Writes  <out-dir>/reliability_<dataset>[_valid].png   (all methods found, overlaid)
+        <out-dir>/reliability_summary[_valid].csv     (per-bin numbers behind the plots)
 """
 
 from __future__ import annotations
@@ -28,14 +29,20 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "experiments" / "paper_rerun"))
 import runpaths  # noqa: E402
 
-METHODS = {"exp1": "SVGP", "exp2": "RPChol+HMC"}
-COLORS = {"exp1": "tab:orange", "exp2": "tab:blue"}
+METHODS = {"exp1": "SVGP", "exp1c": "SVGP (controlled)", "exp2": "RPChol+HMC"}
+COLORS = {"exp1": "tab:orange", "exp1c": "tab:green", "exp2": "tab:blue"}
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     runpaths.add_arguments(p)
     p.add_argument("--seed", type=int, default=1)
+    p.add_argument(
+        "--split",
+        choices=["test", "valid"],
+        default="test",
+        help="test reads exp*_seed<N>_preds.npz; valid reads exp*_valid_seed<N>_preds.npz.",
+    )
     p.add_argument("--n-bins", type=int, default=15)
     p.add_argument(
         "--strategy",
@@ -87,8 +94,9 @@ def main() -> None:
     summary_rows = []
     for dataset in datasets:
         found = {}
+        suffix = "" if args.split == "test" else f"_{args.split}"
         for exp in METHODS:
-            path = run_dir / dataset / f"{exp}_seed{args.seed}_preds.npz"
+            path = run_dir / dataset / f"{exp}{suffix}_seed{args.seed}_preds.npz"
             if path.exists():
                 d = np.load(path)
                 found[exp] = (np.asarray(d["y_test"]).squeeze().astype(int),
@@ -120,7 +128,7 @@ def main() -> None:
 
         ax.set_xlabel("Mean predicted probability")
         ax.set_ylabel("Observed frequency of class 1")
-        ax.set_title(f"Reliability diagram — {dataset} (seed {args.seed})")
+        ax.set_title(f"Reliability diagram — {dataset} {args.split} (seed {args.seed})")
         ax.set_xlim(0, 1)
         ax.set_ylim(0, 1)
         ax.set_aspect("equal")
@@ -128,13 +136,13 @@ def main() -> None:
         ax.legend(loc="upper left", fontsize=9)
         fig.tight_layout()
 
-        png = out_dir / f"reliability_{dataset}.png"
+        png = out_dir / f"reliability_{dataset}{suffix}.png"
         fig.savefig(png, dpi=180)
         plt.close(fig)
         print(f"  -> {png}")
 
     if summary_rows:
-        csv_path = out_dir / "reliability_summary.csv"
+        csv_path = out_dir / f"reliability_summary{suffix}.csv"
         with open(csv_path, "w", newline="", encoding="utf-8") as handle:
             writer = csv.DictWriter(handle, fieldnames=list(summary_rows[0]))
             writer.writeheader()

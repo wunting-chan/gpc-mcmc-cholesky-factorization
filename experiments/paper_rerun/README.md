@@ -106,6 +106,62 @@ loading and evaluation.
    run-to-run spread. This is why `relative_trace_error` and
    `kernel_bandwidth` vary across seeds.
 
+## Follow-up experiments: controlled SVGP and the validation split
+
+Two additions on top of the batch above. Both reuse this harness and the same
+146-column schema; nothing about exp1/exp2 on the test split changed.
+
+**Experiment A -- controlled SVGP (`run_exp1_controlled.py`, group `exp1c`).**
+Same model as the HMC run, different inference. Inducing points are frozen at
+the 200 RPCholesky pivots of the exp2 run with the same seed, the RBF
+lengthscale is fixed to that run's bandwidth (the library's Gaussian kernel is
+exactly GPyTorch's RBF with lengthscale = bandwidth), outputscale is fixed at
+1.0, the prior mean is zero, and only q(u) is trained (Adam, lr 0.01, batch
+1024, 50 epochs -- same as exp1). The script asserts that nothing else has
+`requires_grad` and that the frozen values did not move. Pivots are read from
+`exp2_seed<N>_posterior.npz` when the exp2 run already wrote it; otherwise the
+factor is rebuilt with the same RNG sequence, which yields identical pivots.
+`--likelihood probit` (default) is gpytorch's BernoulliLikelihood, the same
+link the existing SVGP uses. The HMC target uses a logistic link, so
+`--likelihood logistic` is available to remove that last difference.
+
+**Experiment B -- validation split (groups `*_valid`).** All three scripts
+take `--eval-splits test valid`. Each split gets its own row directory
+(`exp1_valid/`, `exp1c_valid/`, `exp2_valid/`) and preds file
+(`exp*_valid_seed<N>_preds.npz`). For exp2 the posterior is sampled once and
+scored on every split listed, and it is saved to
+`exp2_seed<N>_posterior.npz` so `--posterior-file` can score further splits
+later without re-running the factor or HMC. exp1 and exp1c save
+`exp*_seed<N>_model.pt` for the same reason.
+
+Full submission (shared RUN_ID so everything lands in one batch):
+
+    RUN_ID="run-$(date -u +%Y%m%dT%H%M%SZ)"
+    sbatch --export=ALL,RUN_ID=$RUN_ID scripts/paper_rerun_exp2.sbatch            # CPU, test+valid
+    sbatch --export=ALL,RUN_ID=$RUN_ID scripts/paper_rerun_exp1.sbatch            # GPU, test+valid
+    sbatch --export=ALL,RUN_ID=$RUN_ID scripts/paper_rerun_exp1_controlled.sbatch # GPU, test+valid
+
+    python scripts/paper_rerun_aggregate.py --run-id $RUN_ID --expect-runs 5
+    python scripts/paper_rerun_reliability.py --run-id $RUN_ID --seed 1
+    python scripts/paper_rerun_reliability.py --run-id $RUN_ID --seed 1 --split valid
+
+Each `_rerun.csv` then holds, per dataset, the groups exp1, exp1c, exp2,
+exp1_valid, exp1c_valid, exp2_valid, each as 5 seeds + MEAN + STD.
+
+Useful overrides: `DATASETS=camelyon17` to skip pcam, `EVAL_SPLITS=test`
+to skip the validation rows, `LIKELIHOOD=logistic` on the controlled job,
+`REUSE_POSTERIOR=1` on the exp2 job to re-score an existing batch's
+posteriors, `PIVOTS_RUN_ID=<batch>` on the controlled job to borrow another
+batch's pivots. The controlled job should be submitted after (or
+`--dependency=afterok:` on) the exp2 job if you want it to read the saved
+pivots; otherwise it just rebuilds them, which is ~20 s and gives the same
+result.
+
+Caveat on "in-distribution": which hospitals the Hugging Face mirror's
+`validation` split contains was not verified here; the `center` column in
+`camelyon17-hg/valid/labels.csv` is the place to check before calling it
+in-distribution.
+
 ## Reading the results
 
 Check `_rerun_std.csv` alongside the means. Also watch `tau_logp` on exp2: the

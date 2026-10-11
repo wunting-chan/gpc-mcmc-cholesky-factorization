@@ -28,10 +28,14 @@ for path in (str(PROJECT_ROOT), str(PROJECT_ROOT / "src"), str(HERE)):
     if path not in sys.path:
         sys.path.insert(0, path)
 
+import common  # noqa: E402
 import schema  # noqa: E402
 from predictive_metrics2 import (  # noqa: E402
     evaluate_binary_probabilistic_predictions,
 )
+
+load_split = common.load_split
+stratified_subsample = common.stratified_subsample
 
 # Both datasets now train on their full splits, so SVGP sees the same data as
 # the RPCholesky+HMC run it is compared against. The recorded pcam row used a
@@ -53,6 +57,14 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--seed", type=int, required=True)
     p.add_argument("--run-dir", default="data/paper_rerun/runs")
+    p.add_argument(
+        "--eval-splits",
+        nargs="+",
+        default=["test"],
+        choices=list(common.EVAL_SPLITS),
+        help="Splits to write metric rows for. 'test' -> exp1/, "
+             "'valid' -> exp1_valid/ (in-distribution check for camelyon17).",
+    )
 
     # Defaults below reproduce the recorded rows exactly.
     p.add_argument("--num-inducing", type=int, default=512)
@@ -71,32 +83,6 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--no-cuda", action="store_true")
     p.add_argument("--predict-batch-size", type=int, default=8192)
     return p.parse_args()
-
-
-def load_split(data_root: str, dataset: str, split: str):
-    base = Path(data_root) / dataset / split
-    X = np.load(base / "projected_512.npy").astype(np.float32, copy=False)
-    y = np.load(base / "y_embeddings.npy").astype(np.float32, copy=False).squeeze()
-    if X.shape[0] != y.shape[0]:
-        raise ValueError(
-            f"{split}: {X.shape[0]} embeddings vs {y.shape[0]} labels -- misaligned"
-        )
-    return X, y
-
-
-def stratified_subsample(rng, X, y, size):
-    """Class-balanced subsample, matching the 'stratified' note on the pcam row."""
-    if size is None or size >= X.shape[0]:
-        return X, y
-    classes = np.unique(y)
-    per_class = size // len(classes)
-    picked = []
-    for cls in classes:
-        idx = np.flatnonzero(y == cls)
-        take = min(per_class, idx.size)
-        picked.append(rng.choice(idx, size=take, replace=False))
-    keep = np.sort(np.concatenate(picked))
-    return X[keep], y[keep]
 
 
 def main() -> None:
@@ -209,19 +195,41 @@ def main() -> None:
                 probs.append(likelihood(model(xb)).probs.detach().cpu().numpy())
         return np.concatenate(probs, axis=0)
 
-    t0 = time.perf_counter()
-    p_valid = predict(X_va)
-    p_test = predict(X_te)
-    inference_time = time.perf_counter() - t0
+    # The validation split is always scored (it feeds best_val_auroc); the
+    # test split only if requested. Prediction time is measured per split.
+    predictions = {}
+    pred_times = {}
+    for split, X_np in (("valid", X_va), ("test", X_te)):
+        if split != "valid" and split not in args.eval_splits:
+            continue
+        t0 = time.perf_counter()
+        predictions[split] = predict(X_np)
+        pred_times[split] = time.perf_counter() - t0
+    inference_time = sum(pred_times.values())
 
-    valid_metrics = evaluate_binary_probabilistic_predictions(y_true=y_va, p_pred=p_valid)
-    metrics = evaluate_binary_probabilistic_predictions(y_true=y_te, p_pred=p_test)
-    total_wall = time.perf_counter() - wall_t0
+    valid_metrics = evaluate_binary_probabilistic_predictions(
+        y_true=y_va, p_pred=predictions["valid"]
+    )
 
-    row = schema.blank_row()
-    row.update(schema.slurm_context())
-    row.update({
-        "record_id": f"rerun-{args.dataset}-exp1-svgp-seed{args.seed}",
+    # Save the trained model so other splits can be scored without retraining.
+    model_path = common.artifact_path(
+        args.run_dir, args.dataset, f"exp1_seed{args.seed}_model.pt"
+    )
+    torch.save(
+        {
+            "model_state_dict": model.state_dict(),
+            "likelihood_state_dict": likelihood.state_dict(),
+            "num_inducing": num_inducing,
+            "seed": args.seed,
+            "dataset": args.dataset,
+        },
+        model_path,
+    )
+    print(f"  saved model to {model_path}")
+
+    base_row = schema.blank_row()
+    base_row.update(schema.slurm_context())
+    base_row.update({
         "experiment": "exp1",
         "dataset": args.dataset,
         "method_name": "SVGP",
@@ -230,12 +238,6 @@ def main() -> None:
         "script_path": "experiments/paper_rerun/run_exp1.py",
         "run_timestamp_utc": schema.utc_now(),
         "code_ref": schema.git_commit(),
-        "notes": (
-            f"Paper-format rerun, seed={args.seed}. pell left unset: SVGP gives "
-            f"point posterior predictive probabilities, not probability samples. "
-            f"Embeddings: projected_512 (PCA of the 768-d source), so "
-            f"feature_dim={feature_dim} not 768."
-        ),
         "dataset_sources": f"['{args.dataset}']",
         "embedding_source": f"{args.dataset}-projected512",
         "embedding_variant": f"ls{args.lengthscale_init}",
@@ -267,57 +269,46 @@ def main() -> None:
         "train_time_sec": train_time,
         "inference_time_sec": inference_time,
         "prediction_time_sec": inference_time,
-        "total_pipeline_time_sec": total_wall,
-        "total_runtime_sec": total_wall,
         "timing_scope": "training, prediction (data loading measured separately)",
     })
 
-    elpd_mean = metrics["elpd_mean"]
-    row.update({
-        "log_likelihood_mean": elpd_mean,
-        "negative_log_likelihood_mean": metrics["negative_log_likelihood_mean"],
-        "negative_log_loss": metrics["negative_log_likelihood_mean"],
-        "mean_predictive_log_likelihood": elpd_mean,
-        "predictive_likelihood": float(np.exp(elpd_mean)),
-        "elpd": metrics["elpd"],
-        "elpd_mean": elpd_mean,
+    labels = {"valid": y_va, "test": y_te}
+    for split in args.eval_splits:
+        y_ev = labels[split]
+        p_ev = predictions[split]
+        metrics = (valid_metrics if split == "valid"
+                   else evaluate_binary_probabilistic_predictions(y_true=y_ev, p_pred=p_ev))
+        total_wall = time.perf_counter() - wall_t0
+
+        exp_name = common.experiment_name("exp1", split)
+        row = dict(base_row)
+        row.update({
+            "record_id": f"rerun-{args.dataset}-{exp_name}-svgp-seed{args.seed}",
+            "notes": (
+                f"Paper-format rerun, seed={args.seed}, evaluated on the {split} "
+                f"split. pell left unset: SVGP gives point posterior predictive "
+                f"probabilities, not probability samples. Embeddings: "
+                f"projected_512 (PCA of the 768-d source), so "
+                f"feature_dim={feature_dim} not 768."
+            ),
+            "total_pipeline_time_sec": total_wall,
+            "total_runtime_sec": total_wall,
+        })
         # SVGP has no posterior probability samples, so the posterior-expected
         # quantities collapse onto the point-estimate log loss.
-        "pell": elpd_mean,
-        "pell_mean": elpd_mean,
-        "posterior_expected_log_loss": metrics["negative_log_likelihood_mean"],
-        "posterior_log_loss_mean": metrics["negative_log_likelihood_mean"],
-        "posterior_total_log_loss": -metrics["elpd"],
-        "auroc": metrics["auroc"],
-        "auprc": metrics["auprc"],
-        "accuracy": metrics["accuracy"],
-        "brier": metrics["brier"],
-        "ece": metrics["ece"],
-        "number_errors": metrics["number_errors"],
-        "tp": metrics["TP"],
-        "fp": metrics["FP"],
-        "tn": metrics["TN"],
-        "fn": metrics["FN"],
-        "sensitivity_tpr": metrics["sensitivity_TPR"],
-        "specificity_tnr": metrics["specificity_TNR"],
-        "true_positive_rate": metrics["sensitivity_TPR"],
-        "true_negative_rate": metrics["specificity_TNR"],
-        "false_positive_rate": metrics["FPR"],
-        "false_negative_rate": metrics["FNR"],
-        "target_positive_rate": float(np.mean(y_te)),
-    })
+        row.update(common.point_prediction_fields(metrics, y_ev))
 
-    path = schema.write_run(row, args.run_dir, args.dataset, "exp1", args.seed)
+        path = schema.write_run(row, args.run_dir, args.dataset, exp_name, args.seed)
 
-    # Per-point arrays for reliability diagrams. SVGP gives a point predictive
-    # probability, so there is no sample spread to store.
-    pred_path = Path(args.run_dir) / args.dataset / f"exp1_seed{args.seed}_preds.npz"
-    pred_path.parent.mkdir(parents=True, exist_ok=True)
-    np.savez(pred_path, predictive_prob=p_test, y_test=y_te)
-    print(f"  saved predictions to {pred_path}")
-    print(f"  accuracy={metrics['accuracy']:.6f}  auroc={metrics['auroc']:.6f}  "
-          f"total={total_wall:.2f}s")
-    print(f"  wrote {path}")
+        # Per-point arrays for reliability diagrams. SVGP gives a point
+        # predictive probability, so there is no sample spread to store.
+        pred_path = common.preds_path(args.run_dir, args.dataset, exp_name, args.seed)
+        np.savez(pred_path, predictive_prob=p_ev, y_test=y_ev)
+        print(f"  [{split}] saved predictions to {pred_path}")
+        print(f"  [{split}] accuracy={metrics['accuracy']:.6f}  "
+              f"auroc={metrics['auroc']:.6f}  ece={metrics['ece']:.6f}  "
+              f"total={total_wall:.2f}s")
+        print(f"  [{split}] wrote {path}")
 
 
 if __name__ == "__main__":
