@@ -6,6 +6,8 @@
 #
 # Submit from the project root on BigPurple:
 #   sbatch scripts/paper_rerun_exp2.sbatch
+# Only camelyon17, test + validation splits (validation is the default now):
+#   sbatch --export=ALL,RUN_ID=$RUN_ID,DATASETS=camelyon17 scripts/paper_rerun_exp2.sbatch
 #
 # Overridable via --export, e.g.:
 #   sbatch --export=ALL,CONDA_ENV=/gpfs/scratch/sd6701/conda-envs/gpc \
@@ -31,8 +33,33 @@ PROJECT_ROOT="${PROJECT_ROOT:-/gpfs/scratch/sd6701/gpc-mcmc-cholesky-factorizati
 CONDA_ENV="${CONDA_ENV:-/gpfs/scratch/sd6701/conda-envs/gpc}"
 CONDA_SH="${CONDA_SH:-/gpfs/scratch/sd6701/miniconda3/etc/profile.d/conda.sh}"
 DATA_ROOT="${DATA_ROOT:-${PROJECT_ROOT}/experiments/ML-Final-Project/Datasets}"
-RUN_DIR="${RUN_DIR:-${PROJECT_ROOT}/data/paper_rerun/runs}"
+# Every batch writes into its own data/paper_rerun/<RUN_ID>/ so a new run can
+# never mix with or overwrite an earlier one. Pass RUN_ID explicitly so the
+# exp1 and exp2 arrays share one directory -- the fallback below is per-array
+# and would split them into two.
+if [ -z "${RUN_ID:-}" ]; then
+  RUN_ID="batch-${SLURM_ARRAY_JOB_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
+  echo "WARNING: RUN_ID not supplied; defaulting to ${RUN_ID}." >&2
+  echo "         exp1 and exp2 will land in DIFFERENT directories." >&2
+fi
+RUN_DIR="${RUN_DIR:-${PROJECT_ROOT}/data/paper_rerun/${RUN_ID}/runs}"
 SEED="${SLURM_ARRAY_TASK_ID:-1}"
+# Which datasets to run and which splits to score. The HMC posterior is drawn
+# once per seed and scored on every split listed, so "test valid" costs one
+# extra predictive-sampling pass (~1 min), not a second HMC run.
+DATASETS="${DATASETS:-pcam camelyon17}"
+EVAL_SPLITS="${EVAL_SPLITS:-test valid}"
+# REUSE_POSTERIOR=1 skips factor + HMC when <RUN_DIR>/<dataset>/exp2_seed<N>_posterior.npz
+# already exists (e.g. to score the validation split for a finished batch).
+REUSE_POSTERIOR="${REUSE_POSTERIOR:-0}"
+
+# Per-test-point predictions are always saved now (needed for reliability
+# diagrams). Set MAX_TRAIN to cap the training split, e.g. MAX_TRAIN=3000 to
+# reproduce the old subsampled pcam baseline.
+EXTRA_ARGS="--eval-splits ${EVAL_SPLITS}"
+if [ -n "${MAX_TRAIN:-}" ]; then
+  EXTRA_ARGS="${EXTRA_ARGS} --max-train ${MAX_TRAIN}"
+fi
 
 cd "${PROJECT_ROOT}"
 mkdir -p slurm_logs/paper_rerun "${RUN_DIR}"
@@ -51,20 +78,28 @@ export MKL_NUM_THREADS="${SLURM_CPUS_PER_TASK:-8}"
 echo "=============================================================="
 echo "exp2 paper rerun | seed=${SEED} | job=${SLURM_JOB_ID:-local}"
 echo "node=$(hostname) | start=$(date)"
+echo "run id : ${RUN_ID}   datasets: ${DATASETS}   splits: ${EVAL_SPLITS}"
 echo "project=${PROJECT_ROOT}"
 echo "data=${DATA_ROOT}"
 echo "=============================================================="
 
 "${PYTHON}" -c "import numpy, scipy, emcee; print('imports OK')"
 
-for DATASET in pcam camelyon17; do
+for DATASET in ${DATASETS}; do
+  POSTERIOR_ARGS=""
+  POSTERIOR="${RUN_DIR}/${DATASET}/exp2_seed${SEED}_posterior.npz"
+  if [ "${REUSE_POSTERIOR}" = "1" ] && [ -f "${POSTERIOR}" ]; then
+    POSTERIOR_ARGS="--posterior-file ${POSTERIOR}"
+    echo "reusing posterior ${POSTERIOR}"
+  fi
   echo ""
   echo "--- exp2 ${DATASET} seed ${SEED} ---"
+  # shellcheck disable=SC2086
   "${PYTHON}" experiments/paper_rerun/run_exp2.py \
     --dataset "${DATASET}" \
     --data-root "${DATA_ROOT}" \
     --seed "${SEED}" \
-    --run-dir "${RUN_DIR}"
+    --run-dir "${RUN_DIR}" ${POSTERIOR_ARGS} ${EXTRA_ARGS}
 done
 
 echo ""

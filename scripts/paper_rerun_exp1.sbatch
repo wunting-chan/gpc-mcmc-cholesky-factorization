@@ -7,6 +7,8 @@
 #
 # Submit from the project root on BigPurple:
 #   sbatch scripts/paper_rerun_exp1.sbatch
+# Only camelyon17, validation split included (default):
+#   sbatch --export=ALL,RUN_ID=$RUN_ID,DATASETS=camelyon17 scripts/paper_rerun_exp1.sbatch
 #
 # NOTE: verify the partition name against `sinfo -s` before submitting --
 # the value below is a BigPurple guess, not something this script can confirm.
@@ -29,8 +31,34 @@ PROJECT_ROOT="${PROJECT_ROOT:-/gpfs/scratch/sd6701/gpc-mcmc-cholesky-factorizati
 CONDA_ENV="${CONDA_ENV:-/gpfs/scratch/sd6701/conda-envs/gpc}"
 CONDA_SH="${CONDA_SH:-/gpfs/scratch/sd6701/miniconda3/etc/profile.d/conda.sh}"
 DATA_ROOT="${DATA_ROOT:-${PROJECT_ROOT}/experiments/ML-Final-Project/Datasets}"
-RUN_DIR="${RUN_DIR:-${PROJECT_ROOT}/data/paper_rerun/runs}"
+# Every batch writes into its own data/paper_rerun/<RUN_ID>/ so a new run can
+# never mix with or overwrite an earlier one. Pass RUN_ID explicitly so the
+# exp1 and exp2 arrays share one directory -- the fallback below is per-array
+# and would split them into two.
+if [ -z "${RUN_ID:-}" ]; then
+  RUN_ID="batch-${SLURM_ARRAY_JOB_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
+  echo "WARNING: RUN_ID not supplied; defaulting to ${RUN_ID}." >&2
+  echo "         exp1 and exp2 will land in DIFFERENT directories." >&2
+fi
+RUN_DIR="${RUN_DIR:-${PROJECT_ROOT}/data/paper_rerun/${RUN_ID}/runs}"
 SEED="${SLURM_ARRAY_TASK_ID:-1}"
+# Which datasets to run and which splits to score. "valid" adds exp1_valid/
+# rows (the in-distribution check for camelyon17) at no extra training cost.
+DATASETS="${DATASETS:-pcam camelyon17}"
+EVAL_SPLITS="${EVAL_SPLITS:-test valid}"
+
+# Per-test-point predictions are always saved now (needed for reliability
+# diagrams). Set MAX_TRAIN to cap the training split, e.g. MAX_TRAIN=3000 to
+# reproduce the old subsampled pcam baseline.
+EXTRA_ARGS="--eval-splits ${EVAL_SPLITS}"
+if [ -n "${MAX_TRAIN:-}" ]; then
+  EXTRA_ARGS="${EXTRA_ARGS} --max-train ${MAX_TRAIN}"
+fi
+# LENGTHSCALE overrides the RBF init. 64.0 is the default (from the camelyon17
+# sweep); sqrt(512)=22.627 scored better on pcam in job 178255.
+if [ -n "${LENGTHSCALE:-}" ]; then
+  EXTRA_ARGS="${EXTRA_ARGS} --lengthscale-init ${LENGTHSCALE}"
+fi
 
 cd "${PROJECT_ROOT}"
 mkdir -p slurm_logs/paper_rerun "${RUN_DIR}"
@@ -47,18 +75,20 @@ export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH:-}"
 echo "=============================================================="
 echo "exp1 paper rerun | seed=${SEED} | job=${SLURM_JOB_ID:-local}"
 echo "node=$(hostname) | start=$(date)"
+echo "run id : ${RUN_ID}   datasets: ${DATASETS}   splits: ${EVAL_SPLITS}"
 echo "=============================================================="
 
 "${PYTHON}" -c "import torch, gpytorch; print('torch', torch.__version__, 'cuda', torch.cuda.is_available())"
 
-for DATASET in pcam camelyon17; do
+for DATASET in ${DATASETS}; do
   echo ""
   echo "--- exp1 ${DATASET} seed ${SEED} ---"
+  # shellcheck disable=SC2086
   "${PYTHON}" experiments/paper_rerun/run_exp1.py \
     --dataset "${DATASET}" \
     --data-root "${DATA_ROOT}" \
     --seed "${SEED}" \
-    --run-dir "${RUN_DIR}"
+    --run-dir "${RUN_DIR}" ${EXTRA_ARGS}
 done
 
 echo ""

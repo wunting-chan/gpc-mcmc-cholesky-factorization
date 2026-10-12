@@ -26,12 +26,15 @@ jobs fail at import.
 
 ## Running
 
-    # 5 seeds x 2 datasets, one array task per seed
-    sbatch scripts/paper_rerun_exp2.sbatch    # CPU only, ~50 min/task
-    sbatch scripts/paper_rerun_exp1.sbatch    # needs a GPU, ~10 min/task
+    # one id for the whole batch, shared by both arrays
+    RUN_ID="run-$(date -u +%Y%m%dT%H%M%SZ)"
+
+    sbatch --export=ALL,RUN_ID=$RUN_ID scripts/paper_rerun_exp2.sbatch  # CPU
+    sbatch --export=ALL,RUN_ID=$RUN_ID scripts/paper_rerun_exp1.sbatch  # GPU
 
     # once both arrays finish
-    python scripts/paper_rerun_aggregate.py --expect-runs 5
+    python scripts/paper_rerun_aggregate.py --run-id $RUN_ID --expect-runs 5
+    python scripts/paper_rerun_reliability.py --run-id $RUN_ID --seed 1
 
 Change the seed count by editing `--array=1-5` in both sbatch files.
 
@@ -47,13 +50,32 @@ Single run, no SLURM:
 
 ## Output
 
-    data/paper_rerun/
-      runs/<dataset>/<experiment>/seed###.json      one row per run
-      experiment_results_<dataset>_rerun.csv        <- the deliverable (means)
-      experiment_results_<dataset>_rerun_std.csv    sample std of each field
-      experiment_results_<dataset>_allruns.csv      every seed, for traceability
+Every submission writes into its own batch directory, so a new run can never
+overwrite an earlier one:
 
-Each `_rerun.csv` holds two rows, exp1 and exp2, in the original column order.
+    data/paper_rerun/<RUN_ID>/
+      runs/<dataset>/<experiment>/seed###.json      one row per run
+      runs/<dataset>/exp{1,2}_seed<N>_preds.npz     per-test-point predictions
+      experiment_results_<dataset>_rerun.csv        <- the deliverable
+      reliability_<dataset>.png                     calibration curves
+      reliability_summary.csv                       per-bin numbers
+
+Pass RUN_ID on the sbatch command line so the exp1 and exp2 arrays share one
+directory. Without it each array falls back to its own SLURM array job id and
+they land separately.
+
+The post-processing scripts read the most recently modified batch by default;
+use `--run-id <name>` to pick another, or `--run-dir <path>` for an explicit
+location. A pre-existing flat `data/paper_rerun/runs` is still handled.
+
+Each `_rerun.csv` holds 14 rows per dataset: the 5 individual seeds, then a
+MEAN row, then a STD row -- for exp1, then again for exp2.
+
+The `_preds.npz` files carry `predictive_prob` and `y_test`; exp2 adds
+`prob_std`, `latent_mean` and `latent_std`. Turn them into reliability
+diagrams with:
+
+    python scripts/paper_rerun_reliability.py --seed 1
 
 ## Defaults reproduce the recorded rows
 
@@ -62,9 +84,17 @@ exp2: `k=200`, `b=10`, `n_samples=1000`, `n_warmup=1000`, `n_leapfrog=25`,
 recorded `step_size`), bandwidth via `approx_median`.
 
 exp1: `num_inducing=512`, `batch_size=1024`, `50` epochs, `lr=0.01`,
-`lengthscale_init=64.0`, `outputscale_init=1.0`. Split sizes follow the
-recorded rows -- pcam used a stratified 3000/500 subsample, camelyon17 used
-everything. Override with `--max-train` / `--max-valid`.
+`lengthscale_init=64.0`, `outputscale_init=1.0`. Both datasets train on their
+FULL splits so SVGP sees the same data as the exp2 run it is compared against.
+The recorded pcam row used a stratified 3000/500 subsample; reproduce it with
+`--max-train 3000 --max-valid 500` (or `MAX_TRAIN=3000` for the sbatch).
+
+## Timing fields
+
+Both experiments populate `fit_or_train_time_sec` / `train_time_sec` so the two
+are directly comparable: for SVGP that is the epoch loop, for HMC it is
+warmup + sampling. `total_pipeline_time_sec` covers everything including data
+loading and evaluation.
 
 ## Two deviations from the recorded rows
 
@@ -75,6 +105,62 @@ everything. Override with `--max-train` / `--max-valid`.
    randomized, so reusing one fixed factor would understate the method's
    run-to-run spread. This is why `relative_trace_error` and
    `kernel_bandwidth` vary across seeds.
+
+## Follow-up experiments: controlled SVGP and the validation split
+
+Two additions on top of the batch above. Both reuse this harness and the same
+146-column schema; nothing about exp1/exp2 on the test split changed.
+
+**Experiment A -- controlled SVGP (`run_exp1_controlled.py`, group `exp1c`).**
+Same model as the HMC run, different inference. Inducing points are frozen at
+the 200 RPCholesky pivots of the exp2 run with the same seed, the RBF
+lengthscale is fixed to that run's bandwidth (the library's Gaussian kernel is
+exactly GPyTorch's RBF with lengthscale = bandwidth), outputscale is fixed at
+1.0, the prior mean is zero, and only q(u) is trained (Adam, lr 0.01, batch
+1024, 50 epochs -- same as exp1). The script asserts that nothing else has
+`requires_grad` and that the frozen values did not move. Pivots are read from
+`exp2_seed<N>_posterior.npz` when the exp2 run already wrote it; otherwise the
+factor is rebuilt with the same RNG sequence, which yields identical pivots.
+`--likelihood probit` (default) is gpytorch's BernoulliLikelihood, the same
+link the existing SVGP uses. The HMC target uses a logistic link, so
+`--likelihood logistic` is available to remove that last difference.
+
+**Experiment B -- validation split (groups `*_valid`).** All three scripts
+take `--eval-splits test valid`. Each split gets its own row directory
+(`exp1_valid/`, `exp1c_valid/`, `exp2_valid/`) and preds file
+(`exp*_valid_seed<N>_preds.npz`). For exp2 the posterior is sampled once and
+scored on every split listed, and it is saved to
+`exp2_seed<N>_posterior.npz` so `--posterior-file` can score further splits
+later without re-running the factor or HMC. exp1 and exp1c save
+`exp*_seed<N>_model.pt` for the same reason.
+
+Full submission (shared RUN_ID so everything lands in one batch):
+
+    RUN_ID="run-$(date -u +%Y%m%dT%H%M%SZ)"
+    sbatch --export=ALL,RUN_ID=$RUN_ID scripts/paper_rerun_exp2.sbatch            # CPU, test+valid
+    sbatch --export=ALL,RUN_ID=$RUN_ID scripts/paper_rerun_exp1.sbatch            # GPU, test+valid
+    sbatch --export=ALL,RUN_ID=$RUN_ID scripts/paper_rerun_exp1_controlled.sbatch # GPU, test+valid
+
+    python scripts/paper_rerun_aggregate.py --run-id $RUN_ID --expect-runs 5
+    python scripts/paper_rerun_reliability.py --run-id $RUN_ID --seed 1
+    python scripts/paper_rerun_reliability.py --run-id $RUN_ID --seed 1 --split valid
+
+Each `_rerun.csv` then holds, per dataset, the groups exp1, exp1c, exp2,
+exp1_valid, exp1c_valid, exp2_valid, each as 5 seeds + MEAN + STD.
+
+Useful overrides: `DATASETS=camelyon17` to skip pcam, `EVAL_SPLITS=test`
+to skip the validation rows, `LIKELIHOOD=logistic` on the controlled job,
+`REUSE_POSTERIOR=1` on the exp2 job to re-score an existing batch's
+posteriors, `PIVOTS_RUN_ID=<batch>` on the controlled job to borrow another
+batch's pivots. The controlled job should be submitted after (or
+`--dependency=afterok:` on) the exp2 job if you want it to read the saved
+pivots; otherwise it just rebuilds them, which is ~20 s and gives the same
+result.
+
+Caveat on "in-distribution": which hospitals the Hugging Face mirror's
+`validation` split contains was not verified here; the `center` column in
+`camelyon17-hg/valid/labels.csv` is the place to check before calling it
+in-distribution.
 
 ## Reading the results
 

@@ -1,6 +1,9 @@
 """
 Average the per-seed runs written by experiments/paper_rerun/run_exp{1,2}.py
-and emit one CSV per dataset in the original 146-column paper schema.
+and run_exp1_controlled.py and emit one CSV per dataset in the original
+146-column paper schema. Experiment groups present under runs/<dataset>/ are
+exp1 (SVGP), exp1c (controlled SVGP), exp2 (RPChol+HMC) for the test split,
+and exp1_valid / exp1c_valid / exp2_valid for the validation split.
 
 Outputs, under --out-dir:
     experiment_results_<dataset>_rerun.csv       <- the deliverable: mean of all seeds
@@ -29,9 +32,13 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "experiments" / "paper_rerun"))
 
+import runpaths  # noqa: E402
 import schema  # noqa: E402
 
-EXPERIMENT_ORDER = ["exp1", "exp2"]
+# Test-split rows first, then the controlled SVGP, then the validation-split
+# rows. Only exp1/exp2 are required; the others are reported when present.
+EXPERIMENT_ORDER = ["exp1", "exp1c", "exp2", "exp1_valid", "exp1c_valid", "exp2_valid"]
+REQUIRED_EXPERIMENTS = {"exp1", "exp2"}
 
 # Averaging a seed is meaningless -- list them instead.
 SEED_COLUMN = "seed"
@@ -39,8 +46,7 @@ SEED_COLUMN = "seed"
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--run-dir", default="data/paper_rerun/runs")
-    p.add_argument("--out-dir", default="data/paper_rerun")
+    runpaths.add_arguments(p)
     p.add_argument(
         "--expect-runs",
         type=int,
@@ -138,7 +144,7 @@ def write_csv(path: Path, rows: list[dict]) -> None:
 
 def main() -> None:
     args = parse_args()
-    run_dir = Path(args.run_dir)
+    run_dir, out_dir = runpaths.resolve(args)
     if not run_dir.exists():
         raise SystemExit(f"No run directory at {run_dir} -- run the experiments first.")
 
@@ -146,17 +152,19 @@ def main() -> None:
     if not grouped:
         raise SystemExit(f"No seed*.json files found under {run_dir}.")
 
-    out_dir = Path(args.out_dir)
     problems = []
 
     for dataset in sorted(grouped):
         out_rows = []
 
-        for experiment in EXPERIMENT_ORDER:
-            rows = grouped[dataset].get(experiment)
-            if not rows:
-                problems.append(f"{dataset}/{experiment}: no runs found")
-                continue
+        present = set(grouped[dataset])
+        ordered = [e for e in EXPERIMENT_ORDER if e in present]
+        ordered += sorted(present - set(EXPERIMENT_ORDER))
+        for experiment in REQUIRED_EXPERIMENTS - present:
+            problems.append(f"{dataset}/{experiment}: no runs found")
+
+        for experiment in ordered:
+            rows = grouped[dataset][experiment]
 
             rows = sorted(rows, key=lambda r: as_number(r.get("seed")) or 0)
             n = len(rows)
@@ -182,11 +190,13 @@ def main() -> None:
             out_rows.append(std_row)
 
             acc, auroc = mean_row.get("accuracy"), mean_row.get("auroc")
-            if isinstance(acc, float) and isinstance(auroc, float):
-                print(f"{dataset:11s} {experiment}  n={n}  "
-                      f"accuracy={acc:.6f}  auroc={auroc:.6f}")
+            ece, fnr = mean_row.get("ece"), mean_row.get("false_negative_rate")
+            if all(isinstance(v, float) for v in (acc, auroc, ece, fnr)):
+                print(f"{dataset:11s} {experiment:11s} n={n}  "
+                      f"accuracy={acc:.6f}  auroc={auroc:.6f}  "
+                      f"ece={ece:.6f}  fnr={fnr:.6f}")
             else:
-                print(f"{dataset:11s} {experiment}  n={n}")
+                print(f"{dataset:11s} {experiment:11s} n={n}")
 
         if out_rows:
             path = out_dir / f"experiment_results_{dataset}_rerun.csv"
