@@ -1,0 +1,52 @@
+{
+  "config": {
+    "dataset": "camelyon17",
+    "n_train": 50000,
+    "k": 200,
+    "bandwidth": 54.33209991455078,
+    "n_warmup": 1000,
+    "n_samples": 1000,
+    "step_constant": 0.05,
+    "target_accept": 0.8,
+    "seed": 0,
+    "rel_trace_err": 0.08295481586712937
+  },
+  "results": [
+    {
+      "n_leapfrog": 25,
+      "tau_nu": 1.1585073848540652,
+      "tau_logp": 2.331557981011092,
+      "accept_rate": 0.762,
+      "step_size": 0.42744882085129565,
+      "warmup_time": 283.7533652999973,
+      "sampling_time": 360.5594844999987,
+      "wall_time": 644.7580447999999,
+      "ess_nu": 863.1796508797981,
+      "ess_logp": 428.89776198760666
+    },
+    {
+      "n_leapfrog": 35,
+      "tau_nu": -0.03421439581690411,
+      "tau_logp": 5.088635822979676,
+      "accept_rate": 0.838,
+      "step_size": 0.42770004251572735,
+      "warmup_time": 445.3253689999992,
+      "sampling_time": 416.5890156000132,
+      "wall_time": 864.1672375999997,
+      "ess_nu": 1000.0,
+      "ess_logp": 196.51632279993757
+    },
+    {
+      "n_leapfrog": 50,
+      "tau_nu": -0.5148738220534244,
+      "tau_logp": 22.562157910898847,
+      "accept_rate": 0.903,
+      "step_size": 0.43024966002052595,
+      "warmup_time": 587.0197285999975,
+      "sampling_time": 562.3773894999777,
+      "wall_time": 1150.7730192999998,
+      "ess_nu": 1000.0,
+      "ess_logp": 44.32200164315583
+    }
+  ]
+}
