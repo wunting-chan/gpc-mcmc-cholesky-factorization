@@ -16,8 +16,9 @@ SEEDS=(0 1 2 3 4 0 1 2 3 4)
 DATASET=${DATASETS[$SLURM_ARRAY_TASK_ID]}
 SEED=${SEEDS[$SLURM_ARRAY_TASK_ID]}
 
-REPO_DIR="$HOME/personal/gpc-mcmc-cholesky-factorization"
-DATA_ROOT="$HOME/gpc-mcmc-cholesky-factorization/experiments/ML-Final-Project/Datasets"
+SCRATCH="/gpfs/scratch/sd6701"
+REPO_DIR="$SCRATCH/personal/gpc-mcmc-cholesky-factorization"
+DATA_ROOT="$SCRATCH/gpc-mcmc-cholesky-factorization/experiments/ML-Final-Project/Datasets"
 
 cd "$REPO_DIR"
 mkdir -p slurm_logs data/paper_rerun/runs

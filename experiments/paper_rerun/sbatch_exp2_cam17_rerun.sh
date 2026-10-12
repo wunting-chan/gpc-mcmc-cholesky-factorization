@@ -7,12 +7,13 @@
 #SBATCH --output=slurm_logs/exp2_cam17_rerun_%A_%a.out
 #SBATCH --error=slurm_logs/exp2_cam17_rerun_%A_%a.err
 #SBATCH --partition=a100_short
-#SBATCH --gres=gpu:a100:1
+
 
 SEED=$SLURM_ARRAY_TASK_ID
 
-REPO_DIR="$HOME/personal/gpc-mcmc-cholesky-factorization"
-DATA_ROOT="$HOME/gpc-mcmc-cholesky-factorization/experiments/ML-Final-Project/Datasets"
+SCRATCH="/gpfs/scratch/sd6701"
+REPO_DIR="$SCRATCH/personal/gpc-mcmc-cholesky-factorization"
+DATA_ROOT="$SCRATCH/gpc-mcmc-cholesky-factorization/experiments/ML-Final-Project/Datasets"
 
 cd "$REPO_DIR"
 mkdir -p slurm_logs data/paper_rerun/runs
