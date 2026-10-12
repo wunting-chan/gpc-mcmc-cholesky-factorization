@@ -1,0 +1,520 @@
+[exp2/pcam/seed1] train=(262144, 512) test=(32768, 512) valid=(32768, 512)
+  factor k=200 in 11.40s  rel_trace_err=1.0766e-01  pivot_max=1.33e-15
+  HMC accept=0.797  step=0.016565  tau_logp=9.27
+  saved posterior to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed1_posterior.npz
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed1_preds.npz
+  [test] accuracy=0.916595  auroc=0.978132  ece=0.053614  total=691.54s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2/seed001.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_valid_seed1_preds.npz
+  [valid] accuracy=0.915070  auroc=0.970261  ece=0.031188  total=703.25s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_valid/seed001.json
+[exp1/pcam/seed1] device=cuda train=(262144, 512) valid=(32768, 512) test=(32768, 512)
+  epoch   1/50: loss=0.237230
+  epoch   5/50: loss=0.115342
+  epoch  10/50: loss=0.107451
+  epoch  15/50: loss=0.103946
+  epoch  20/50: loss=0.101052
+  epoch  25/50: loss=0.099120
+  epoch  30/50: loss=0.097932
+  epoch  35/50: loss=0.096866
+  epoch  40/50: loss=0.096203
+  epoch  45/50: loss=0.095434
+  epoch  50/50: loss=0.094949
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_seed1_model.pt
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_seed1_preds.npz
+  [test] accuracy=0.895294  auroc=0.977409  ece=0.093521  total=197.58s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1/seed001.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_valid_seed1_preds.npz
+  [valid] accuracy=0.911652  auroc=0.966395  ece=0.062709  total=197.58s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_valid/seed001.json
+[exp1c/pcam/seed1] pivots=200 (/gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed1_posterior.npz)  bandwidth=49.5711  lengthscale=49.5711  likelihood=probit
+  device=cuda train=(262144, 512) test=(32768, 512) valid=(32768, 512)
+  trainable: ['variational_strategy._variational_distribution.variational_mean', 'variational_strategy._variational_distribution.chol_variational_covar']
+  epoch   1/50: loss=0.349170
+  epoch   5/50: loss=0.156553
+  epoch  10/50: loss=0.145948
+  epoch  15/50: loss=0.142666
+  epoch  20/50: loss=0.141202
+  epoch  25/50: loss=0.140562
+  epoch  30/50: loss=0.140256
+  epoch  35/50: loss=0.140066
+  epoch  40/50: loss=0.140003
+  epoch  45/50: loss=0.139924
+  epoch  50/50: loss=0.139875
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_seed1_model.pt
+  [test] accuracy=0.905090  auroc=0.974330  ece=0.070806  nll=0.244977  fnr=0.171033
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c/seed001.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_seed1_preds.npz
+  [valid] accuracy=0.914154  auroc=0.970534  ece=0.038610  nll=0.237288  fnr=0.138799
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_valid/seed001.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_valid_seed1_preds.npz
+  total=182.93s
+[exp2/camelyon17/seed1] train=(302436, 512) test=(85054, 512) valid=(68464, 512)
+  factor k=200 in 14.45s  rel_trace_err=8.4264e-02  pivot_max=1.67e-15
+The chain is shorter than 50 times the integrated autocorrelation time for 1 parameter(s). Use this estimate with caution and run a longer chain!
+N/50 = 20;
+tau: [145.41331124]
+The chain is shorter than 50 times the integrated autocorrelation time for 1 parameter(s). Use this estimate with caution and run a longer chain!
+N/50 = 20;
+tau: [55.30032148]
+  HMC accept=0.831  step=0.000144  tau_logp=145.41
+  saved posterior to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed1_posterior.npz
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed1_preds.npz
+  [test] accuracy=0.972770  auroc=0.991943  ece=0.020854  total=705.02s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2/seed001.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_valid_seed1_preds.npz
+  [valid] accuracy=0.958913  auroc=0.991507  ece=0.033520  total=714.25s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_valid/seed001.json
+[exp1/camelyon17/seed1] device=cuda train=(302436, 512) valid=(68464, 512) test=(85054, 512)
+  epoch   1/50: loss=0.122205
+  epoch   5/50: loss=0.029580
+  epoch  10/50: loss=0.027852
+  epoch  15/50: loss=0.026988
+  epoch  20/50: loss=0.026606
+  epoch  25/50: loss=0.026335
+  epoch  30/50: loss=0.026087
+  epoch  35/50: loss=0.025878
+  epoch  40/50: loss=0.025647
+  epoch  45/50: loss=0.025508
+  epoch  50/50: loss=0.025369
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_seed1_model.pt
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_seed1_preds.npz
+  [test] accuracy=0.845239  auroc=0.993125  ece=0.173101  total=225.14s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1/seed001.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_valid_seed1_preds.npz
+  [valid] accuracy=0.980997  auroc=0.998151  ece=0.009045  total=225.15s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_valid/seed001.json
+[exp1c/camelyon17/seed1] pivots=200 (/gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed1_posterior.npz)  bandwidth=54.4779  lengthscale=54.4779  likelihood=probit
+  device=cuda train=(302436, 512) test=(85054, 512) valid=(68464, 512)
+  trainable: ['variational_strategy._variational_distribution.variational_mean', 'variational_strategy._variational_distribution.chol_variational_covar']
+  epoch   1/50: loss=0.241275
+  epoch   5/50: loss=0.044669
+  epoch  10/50: loss=0.038911
+  epoch  15/50: loss=0.037104
+  epoch  20/50: loss=0.036169
+  epoch  25/50: loss=0.035716
+  epoch  30/50: loss=0.035494
+  epoch  35/50: loss=0.035361
+  epoch  40/50: loss=0.035279
+  epoch  45/50: loss=0.035254
+  epoch  50/50: loss=0.035208
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_seed1_model.pt
+  [test] accuracy=0.944282  auroc=0.994056  ece=0.061220  nll=0.136564  fnr=0.108308
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c/seed001.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_seed1_preds.npz
+  [valid] accuracy=0.978061  auroc=0.997556  ece=0.010247  nll=0.061143  fnr=0.024105
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_valid/seed001.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_valid_seed1_preds.npz
+  total=191.33s
+[exp2/pcam/seed2] train=(262144, 512) test=(32768, 512) valid=(32768, 512)
+  factor k=200 in 11.85s  rel_trace_err=1.0546e-01  pivot_max=1.22e-15
+  HMC accept=0.958  step=0.016232  tau_logp=6.34
+  saved posterior to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed2_posterior.npz
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed2_preds.npz
+  [test] accuracy=0.919098  auroc=0.978623  ece=0.049905  total=628.26s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2/seed002.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_valid_seed2_preds.npz
+  [valid] accuracy=0.916656  auroc=0.968894  ece=0.030075  total=639.83s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_valid/seed002.json
+[exp1/pcam/seed2] device=cuda train=(262144, 512) valid=(32768, 512) test=(32768, 512)
+  epoch   1/50: loss=0.236790
+  epoch   5/50: loss=0.115311
+  epoch  10/50: loss=0.107681
+  epoch  15/50: loss=0.103611
+  epoch  20/50: loss=0.100962
+  epoch  25/50: loss=0.099218
+  epoch  30/50: loss=0.097891
+  epoch  35/50: loss=0.097032
+  epoch  40/50: loss=0.096037
+  epoch  45/50: loss=0.095445
+  epoch  50/50: loss=0.094734
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_seed2_model.pt
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_seed2_preds.npz
+  [test] accuracy=0.901031  auroc=0.978232  ece=0.091174  total=197.27s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1/seed002.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_valid_seed2_preds.npz
+  [valid] accuracy=0.914673  auroc=0.971451  ece=0.063591  total=197.27s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_valid/seed002.json
+[exp1c/pcam/seed2] pivots=200 (/gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed2_posterior.npz)  bandwidth=49.8306  lengthscale=49.8306  likelihood=probit
+  device=cuda train=(262144, 512) test=(32768, 512) valid=(32768, 512)
+  trainable: ['variational_strategy._variational_distribution.variational_mean', 'variational_strategy._variational_distribution.chol_variational_covar']
+  epoch   1/50: loss=0.349458
+  epoch   5/50: loss=0.154780
+  epoch  10/50: loss=0.143485
+  epoch  15/50: loss=0.140184
+  epoch  20/50: loss=0.138970
+  epoch  25/50: loss=0.138480
+  epoch  30/50: loss=0.138217
+  epoch  35/50: loss=0.138068
+  epoch  40/50: loss=0.138031
+  epoch  45/50: loss=0.137981
+  epoch  50/50: loss=0.137975
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_seed2_model.pt
+  [test] accuracy=0.914246  auroc=0.977025  ece=0.059597  nll=0.222193  fnr=0.151432
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c/seed002.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_seed2_preds.npz
+  [valid] accuracy=0.915741  auroc=0.969259  ece=0.035633  nll=0.237378  fnr=0.135622
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_valid/seed002.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_valid_seed2_preds.npz
+  total=172.23s
+[exp2/camelyon17/seed2] train=(302436, 512) test=(85054, 512) valid=(68464, 512)
+  factor k=200 in 13.04s  rel_trace_err=8.2606e-02  pivot_max=1.33e-15
+The chain is shorter than 50 times the integrated autocorrelation time for 1 parameter(s). Use this estimate with caution and run a longer chain!
+N/50 = 20;
+tau: [145.51948625]
+The chain is shorter than 50 times the integrated autocorrelation time for 1 parameter(s). Use this estimate with caution and run a longer chain!
+N/50 = 20;
+tau: [140.51460269]
+  HMC accept=0.794  step=0.000140  tau_logp=145.52
+  saved posterior to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed2_posterior.npz
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed2_preds.npz
+  [test] accuracy=0.972900  auroc=0.991766  ece=0.020716  total=670.49s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2/seed002.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_valid_seed2_preds.npz
+  [valid] accuracy=0.958328  auroc=0.991378  ece=0.034044  total=679.74s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_valid/seed002.json
+[exp1/camelyon17/seed2] device=cuda train=(302436, 512) valid=(68464, 512) test=(85054, 512)
+  epoch   1/50: loss=0.121494
+  epoch   5/50: loss=0.029745
+  epoch  10/50: loss=0.027939
+  epoch  15/50: loss=0.027124
+  epoch  20/50: loss=0.026707
+  epoch  25/50: loss=0.026258
+  epoch  30/50: loss=0.026005
+  epoch  35/50: loss=0.025749
+  epoch  40/50: loss=0.025556
+  epoch  45/50: loss=0.025552
+  epoch  50/50: loss=0.025434
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_seed2_model.pt
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_seed2_preds.npz
+  [test] accuracy=0.828873  auroc=0.994715  ece=0.189601  total=228.44s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1/seed002.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_valid_seed2_preds.npz
+  [valid] accuracy=0.980574  auroc=0.998134  ece=0.007726  total=228.45s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_valid/seed002.json
+[exp1c/camelyon17/seed2] pivots=200 (/gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed2_posterior.npz)  bandwidth=54.5342  lengthscale=54.5342  likelihood=probit
+  device=cuda train=(302436, 512) test=(85054, 512) valid=(68464, 512)
+  trainable: ['variational_strategy._variational_distribution.variational_mean', 'variational_strategy._variational_distribution.chol_variational_covar']
+  epoch   1/50: loss=0.241230
+  epoch   5/50: loss=0.045727
+  epoch  10/50: loss=0.039709
+  epoch  15/50: loss=0.037937
+  epoch  20/50: loss=0.037154
+  epoch  25/50: loss=0.036802
+  epoch  30/50: loss=0.036583
+  epoch  35/50: loss=0.036502
+  epoch  40/50: loss=0.036426
+  epoch  45/50: loss=0.036373
+  epoch  50/50: loss=0.036366
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_seed2_model.pt
+  [test] accuracy=0.936546  auroc=0.993315  ece=0.071425  nll=0.154093  fnr=0.123898
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c/seed002.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_seed2_preds.npz
+  [valid] accuracy=0.976294  auroc=0.997030  ece=0.011119  nll=0.067179  fnr=0.025925
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_valid/seed002.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_valid_seed2_preds.npz
+  total=208.07s
+[exp2/pcam/seed3] train=(262144, 512) test=(32768, 512) valid=(32768, 512)
+  factor k=200 in 11.74s  rel_trace_err=1.0598e-01  pivot_max=1.55e-15
+  HMC accept=0.894  step=0.016292  tau_logp=6.79
+  saved posterior to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed3_posterior.npz
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed3_preds.npz
+  [test] accuracy=0.925201  auroc=0.981917  ece=0.044108  total=651.88s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2/seed003.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_valid_seed3_preds.npz
+  [valid] accuracy=0.914520  auroc=0.968992  ece=0.029347  total=663.17s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_valid/seed003.json
+[exp1/pcam/seed3] device=cuda train=(262144, 512) valid=(32768, 512) test=(32768, 512)
+  epoch   1/50: loss=0.236592
+  epoch   5/50: loss=0.115377
+  epoch  10/50: loss=0.107581
+  epoch  15/50: loss=0.103728
+  epoch  20/50: loss=0.101036
+  epoch  25/50: loss=0.099242
+  epoch  30/50: loss=0.098061
+  epoch  35/50: loss=0.096930
+  epoch  40/50: loss=0.095894
+  epoch  45/50: loss=0.095418
+  epoch  50/50: loss=0.094866
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_seed3_model.pt
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_seed3_preds.npz
+  [test] accuracy=0.909363  auroc=0.980636  ece=0.082463  total=198.25s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1/seed003.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_valid_seed3_preds.npz
+  [valid] accuracy=0.916077  auroc=0.969860  ece=0.057227  total=198.25s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_valid/seed003.json
+[exp1c/pcam/seed3] pivots=200 (/gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed3_posterior.npz)  bandwidth=49.7739  lengthscale=49.7739  likelihood=probit
+  device=cuda train=(262144, 512) test=(32768, 512) valid=(32768, 512)
+  trainable: ['variational_strategy._variational_distribution.variational_mean', 'variational_strategy._variational_distribution.chol_variational_covar']
+  epoch   1/50: loss=0.347177
+  epoch   5/50: loss=0.151361
+  epoch  10/50: loss=0.142534
+  epoch  15/50: loss=0.139799
+  epoch  20/50: loss=0.138728
+  epoch  25/50: loss=0.138199
+  epoch  30/50: loss=0.137934
+  epoch  35/50: loss=0.137833
+  epoch  40/50: loss=0.137778
+  epoch  45/50: loss=0.137672
+  epoch  50/50: loss=0.137635
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_seed3_model.pt
+  [test] accuracy=0.925079  auroc=0.981866  ece=0.045222  nll=0.190739  fnr=0.126580
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c/seed003.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_seed3_preds.npz
+  [valid] accuracy=0.912537  auroc=0.967856  ece=0.031288  nll=0.241303  fnr=0.135867
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_valid/seed003.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_valid_seed3_preds.npz
+  total=165.46s
+[exp2/camelyon17/seed3] train=(302436, 512) test=(85054, 512) valid=(68464, 512)
+  factor k=200 in 12.76s  rel_trace_err=8.3866e-02  pivot_max=1.11e-15
+The chain is shorter than 50 times the integrated autocorrelation time for 1 parameter(s). Use this estimate with caution and run a longer chain!
+N/50 = 20;
+tau: [145.38923649]
+The chain is shorter than 50 times the integrated autocorrelation time for 1 parameter(s). Use this estimate with caution and run a longer chain!
+N/50 = 20;
+tau: [146.39534053]
+  HMC accept=0.819  step=0.000146  tau_logp=145.39
+  saved posterior to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed3_posterior.npz
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed3_preds.npz
+  [test] accuracy=0.972347  auroc=0.991764  ece=0.021315  total=701.39s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2/seed003.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_valid_seed3_preds.npz
+  [valid] accuracy=0.959424  auroc=0.991658  ece=0.033072  total=710.74s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_valid/seed003.json
+[exp1/camelyon17/seed3] device=cuda train=(302436, 512) valid=(68464, 512) test=(85054, 512)
+  epoch   1/50: loss=0.121505
+  epoch   5/50: loss=0.029644
+  epoch  10/50: loss=0.027795
+  epoch  15/50: loss=0.026970
+  epoch  20/50: loss=0.026449
+  epoch  25/50: loss=0.026234
+  epoch  30/50: loss=0.025880
+  epoch  35/50: loss=0.025755
+  epoch  40/50: loss=0.025485
+  epoch  45/50: loss=0.025345
+  epoch  50/50: loss=0.025285
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_seed3_model.pt
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_seed3_preds.npz
+  [test] accuracy=0.876620  auroc=0.994736  ece=0.144714  total=228.81s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1/seed003.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_valid_seed3_preds.npz
+  [valid] accuracy=0.979683  auroc=0.998046  ece=0.009432  total=228.82s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_valid/seed003.json
+[exp1c/camelyon17/seed3] pivots=200 (/gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed3_posterior.npz)  bandwidth=54.3746  lengthscale=54.3746  likelihood=probit
+  device=cuda train=(302436, 512) test=(85054, 512) valid=(68464, 512)
+  trainable: ['variational_strategy._variational_distribution.variational_mean', 'variational_strategy._variational_distribution.chol_variational_covar']
+  epoch   1/50: loss=0.236007
+  epoch   5/50: loss=0.045505
+  epoch  10/50: loss=0.039296
+  epoch  15/50: loss=0.037468
+  epoch  20/50: loss=0.036578
+  epoch  25/50: loss=0.036190
+  epoch  30/50: loss=0.035933
+  epoch  35/50: loss=0.035830
+  epoch  40/50: loss=0.035756
+  epoch  45/50: loss=0.035713
+  epoch  50/50: loss=0.035676
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_seed3_model.pt
+  [test] accuracy=0.969854  auroc=0.993998  ece=0.039290  nll=0.106553  fnr=0.051403
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c/seed003.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_seed3_preds.npz
+  [valid] accuracy=0.976645  auroc=0.997327  ece=0.013765  nll=0.065613  fnr=0.022871
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_valid/seed003.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_valid_seed3_preds.npz
+  total=203.49s
+[exp2/pcam/seed4] train=(262144, 512) test=(32768, 512) valid=(32768, 512)
+  factor k=200 in 17.97s  rel_trace_err=1.0995e-01  pivot_max=1.33e-15
+  HMC accept=0.974  step=0.016246  tau_logp=5.15
+  saved posterior to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed4_posterior.npz
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed4_preds.npz
+  [test] accuracy=0.925049  auroc=0.980801  ece=0.044990  total=620.57s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2/seed004.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_valid_seed4_preds.npz
+  [valid] accuracy=0.912811  auroc=0.967612  ece=0.031741  total=632.17s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_valid/seed004.json
+[exp1/pcam/seed4] device=cuda train=(262144, 512) valid=(32768, 512) test=(32768, 512)
+  epoch   1/50: loss=0.235296
+  epoch   5/50: loss=0.115653
+  epoch  10/50: loss=0.107324
+  epoch  15/50: loss=0.103678
+  epoch  20/50: loss=0.101175
+  epoch  25/50: loss=0.099293
+  epoch  30/50: loss=0.098183
+  epoch  35/50: loss=0.096917
+  epoch  40/50: loss=0.095840
+  epoch  45/50: loss=0.095609
+  epoch  50/50: loss=0.094679
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_seed4_model.pt
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_seed4_preds.npz
+  [test] accuracy=0.904816  auroc=0.978617  ece=0.084264  total=198.02s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1/seed004.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_valid_seed4_preds.npz
+  [valid] accuracy=0.916412  auroc=0.971987  ece=0.054536  total=198.02s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_valid/seed004.json
+[exp1c/pcam/seed4] pivots=200 (/gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed4_posterior.npz)  bandwidth=49.0532  lengthscale=49.0532  likelihood=probit
+  device=cuda train=(262144, 512) test=(32768, 512) valid=(32768, 512)
+  trainable: ['variational_strategy._variational_distribution.variational_mean', 'variational_strategy._variational_distribution.chol_variational_covar']
+  epoch   1/50: loss=0.354813
+  epoch   5/50: loss=0.155415
+  epoch  10/50: loss=0.144108
+  epoch  15/50: loss=0.140920
+  epoch  20/50: loss=0.139738
+  epoch  25/50: loss=0.139219
+  epoch  30/50: loss=0.139059
+  epoch  35/50: loss=0.138868
+  epoch  40/50: loss=0.138822
+  epoch  45/50: loss=0.138807
+  epoch  50/50: loss=0.138759
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_seed4_model.pt
+  [test] accuracy=0.924255  auroc=0.979171  ece=0.048939  nll=0.203099  fnr=0.129633
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c/seed004.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_seed4_preds.npz
+  [valid] accuracy=0.911316  auroc=0.966238  ece=0.032748  nll=0.247406  fnr=0.137760
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_valid/seed004.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_valid_seed4_preds.npz
+  total=174.26s
+[exp2/camelyon17/seed4] train=(302436, 512) test=(85054, 512) valid=(68464, 512)
+  factor k=200 in 12.99s  rel_trace_err=8.5506e-02  pivot_max=1.22e-15
+The chain is shorter than 50 times the integrated autocorrelation time for 1 parameter(s). Use this estimate with caution and run a longer chain!
+N/50 = 20;
+tau: [145.11042085]
+The chain is shorter than 50 times the integrated autocorrelation time for 1 parameter(s). Use this estimate with caution and run a longer chain!
+N/50 = 20;
+tau: [142.07428915]
+  HMC accept=0.837  step=0.000134  tau_logp=145.11
+  saved posterior to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed4_posterior.npz
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed4_preds.npz
+  [test] accuracy=0.973252  auroc=0.991842  ece=0.020559  total=702.92s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2/seed004.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_valid_seed4_preds.npz
+  [valid] accuracy=0.958679  auroc=0.991463  ece=0.033605  total=712.28s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_valid/seed004.json
+[exp1/camelyon17/seed4] device=cuda train=(302436, 512) valid=(68464, 512) test=(85054, 512)
+  epoch   1/50: loss=0.123285
+  epoch   5/50: loss=0.029752
+  epoch  10/50: loss=0.027903
+  epoch  15/50: loss=0.027136
+  epoch  20/50: loss=0.026735
+  epoch  25/50: loss=0.026177
+  epoch  30/50: loss=0.025950
+  epoch  35/50: loss=0.025837
+  epoch  40/50: loss=0.025688
+  epoch  45/50: loss=0.025539
+  epoch  50/50: loss=0.025416
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_seed4_model.pt
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_seed4_preds.npz
+  [test] accuracy=0.847191  auroc=0.993740  ece=0.177074  total=235.53s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1/seed004.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_valid_seed4_preds.npz
+  [valid] accuracy=0.978237  auroc=0.998071  ece=0.017993  total=235.54s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_valid/seed004.json
+[exp1c/camelyon17/seed4] pivots=200 (/gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed4_posterior.npz)  bandwidth=53.9712  lengthscale=53.9712  likelihood=probit
+  device=cuda train=(302436, 512) test=(85054, 512) valid=(68464, 512)
+  trainable: ['variational_strategy._variational_distribution.variational_mean', 'variational_strategy._variational_distribution.chol_variational_covar']
+  epoch   1/50: loss=0.242412
+  epoch   5/50: loss=0.046669
+  epoch  10/50: loss=0.039719
+  epoch  15/50: loss=0.037637
+  epoch  20/50: loss=0.036714
+  epoch  25/50: loss=0.036296
+  epoch  30/50: loss=0.036141
+  epoch  35/50: loss=0.036062
+  epoch  40/50: loss=0.035989
+  epoch  45/50: loss=0.035996
+  epoch  50/50: loss=0.035977
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_seed4_model.pt
+  [test] accuracy=0.959508  auroc=0.992859  ece=0.048411  nll=0.123291  fnr=0.075505
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c/seed004.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_seed4_preds.npz
+  [valid] accuracy=0.977317  auroc=0.997381  ece=0.011636  nll=0.064008  fnr=0.025338
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_valid/seed004.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_valid_seed4_preds.npz
+  total=204.52s
+[exp2/pcam/seed5] train=(262144, 512) test=(32768, 512) valid=(32768, 512)
+  factor k=200 in 11.50s  rel_trace_err=1.0802e-01  pivot_max=1.33e-15
+  HMC accept=0.794  step=0.016640  tau_logp=10.96
+  saved posterior to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed5_posterior.npz
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed5_preds.npz
+  [test] accuracy=0.919281  auroc=0.979792  ece=0.051443  total=579.29s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2/seed005.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_valid_seed5_preds.npz
+  [valid] accuracy=0.913300  auroc=0.967431  ece=0.032965  total=591.65s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_valid/seed005.json
+[exp1/pcam/seed5] device=cuda train=(262144, 512) valid=(32768, 512) test=(32768, 512)
+  epoch   1/50: loss=0.238161
+  epoch   5/50: loss=0.115872
+  epoch  10/50: loss=0.107717
+  epoch  15/50: loss=0.103938
+  epoch  20/50: loss=0.100983
+  epoch  25/50: loss=0.099568
+  epoch  30/50: loss=0.098191
+  epoch  35/50: loss=0.097233
+  epoch  40/50: loss=0.096055
+  epoch  45/50: loss=0.095585
+  epoch  50/50: loss=0.095022
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_seed5_model.pt
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_seed5_preds.npz
+  [test] accuracy=0.908783  auroc=0.980090  ece=0.081873  total=197.48s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1/seed005.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_valid_seed5_preds.npz
+  [valid] accuracy=0.916016  auroc=0.971874  ece=0.057753  total=197.49s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1_valid/seed005.json
+[exp1c/pcam/seed5] pivots=200 (/gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp2_seed5_posterior.npz)  bandwidth=49.2835  lengthscale=49.2835  likelihood=probit
+  device=cuda train=(262144, 512) test=(32768, 512) valid=(32768, 512)
+  trainable: ['variational_strategy._variational_distribution.variational_mean', 'variational_strategy._variational_distribution.chol_variational_covar']
+  epoch   1/50: loss=0.347402
+  epoch   5/50: loss=0.154729
+  epoch  10/50: loss=0.145978
+  epoch  15/50: loss=0.143738
+  epoch  20/50: loss=0.142852
+  epoch  25/50: loss=0.142454
+  epoch  30/50: loss=0.142267
+  epoch  35/50: loss=0.142139
+  epoch  40/50: loss=0.142070
+  epoch  45/50: loss=0.142010
+  epoch  50/50: loss=0.142039
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_seed5_model.pt
+  [test] accuracy=0.915314  auroc=0.979166  ece=0.059557  nll=0.215365  fnr=0.149478
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c/seed005.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_seed5_preds.npz
+  [valid] accuracy=0.911011  auroc=0.967146  ece=0.039196  nll=0.251045  fnr=0.142403
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_valid/seed005.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/pcam/exp1c_valid_seed5_preds.npz
+  total=171.85s
+[exp2/camelyon17/seed5] train=(302436, 512) test=(85054, 512) valid=(68464, 512)
+  factor k=200 in 12.93s  rel_trace_err=8.3912e-02  pivot_max=1.44e-15
+The chain is shorter than 50 times the integrated autocorrelation time for 1 parameter(s). Use this estimate with caution and run a longer chain!
+N/50 = 20;
+tau: [144.96521904]
+The chain is shorter than 50 times the integrated autocorrelation time for 1 parameter(s). Use this estimate with caution and run a longer chain!
+N/50 = 20;
+tau: [144.19739109]
+  HMC accept=0.816  step=0.000135  tau_logp=144.97
+  saved posterior to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed5_posterior.npz
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed5_preds.npz
+  [test] accuracy=0.972100  auroc=0.991665  ece=0.021859  total=669.64s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2/seed005.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_valid_seed5_preds.npz
+  [valid] accuracy=0.957978  auroc=0.991171  ece=0.034199  total=679.03s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_valid/seed005.json
+[exp1/camelyon17/seed5] device=cuda train=(302436, 512) valid=(68464, 512) test=(85054, 512)
+  epoch   1/50: loss=0.124624
+  epoch   5/50: loss=0.030015
+  epoch  10/50: loss=0.028021
+  epoch  15/50: loss=0.027154
+  epoch  20/50: loss=0.026717
+  epoch  25/50: loss=0.026327
+  epoch  30/50: loss=0.026026
+  epoch  35/50: loss=0.025874
+  epoch  40/50: loss=0.025685
+  epoch  45/50: loss=0.025593
+  epoch  50/50: loss=0.025503
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_seed5_model.pt
+  [test] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_seed5_preds.npz
+  [test] accuracy=0.865897  auroc=0.994728  ece=0.156916  total=230.82s
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1/seed005.json
+  [valid] saved predictions to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_valid_seed5_preds.npz
+  [valid] accuracy=0.976163  auroc=0.997804  ece=0.020788  total=230.82s
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1_valid/seed005.json
+[exp1c/camelyon17/seed5] pivots=200 (/gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp2_seed5_posterior.npz)  bandwidth=54.2269  lengthscale=54.2269  likelihood=probit
+  device=cuda train=(302436, 512) test=(85054, 512) valid=(68464, 512)
+  trainable: ['variational_strategy._variational_distribution.variational_mean', 'variational_strategy._variational_distribution.chol_variational_covar']
+  epoch   1/50: loss=0.240049
+  epoch   5/50: loss=0.042881
+  epoch  10/50: loss=0.037330
+  epoch  15/50: loss=0.035940
+  epoch  20/50: loss=0.035331
+  epoch  25/50: loss=0.035017
+  epoch  30/50: loss=0.034879
+  epoch  35/50: loss=0.034803
+  epoch  40/50: loss=0.034755
+  epoch  45/50: loss=0.034733
+  epoch  50/50: loss=0.034760
+  saved model to /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_seed5_model.pt
+  [test] accuracy=0.975510  auroc=0.993966  ece=0.040156  nll=0.101302  fnr=0.040657
+  [test] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c/seed005.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_seed5_preds.npz
+  [valid] accuracy=0.978719  auroc=0.997640  ece=0.009114  nll=0.060250  fnr=0.023253
+  [valid] wrote /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_valid/seed005.json and /gpfs/scratch/sd6701/personal/gpc-mcmc-cholesky-factorization/data/paper_rerun/run-20261011T204337Z/runs/camelyon17/exp1c_valid_seed5_preds.npz
+  total=197.26s

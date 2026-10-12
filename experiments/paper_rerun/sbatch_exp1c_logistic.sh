@@ -8,6 +8,7 @@
 #SBATCH --output=slurm_logs/exp1c_logistic_%A_%a.out
 #SBATCH --error=slurm_logs/exp1c_logistic_%A_%a.err
 #SBATCH --partition=a100_short
+#SBATCH --exclude=a100-4032
 
 # 5 seeds x 2 datasets = 10 jobs
 DATASETS=(pcam pcam pcam pcam pcam camelyon17 camelyon17 camelyon17 camelyon17 camelyon17)
