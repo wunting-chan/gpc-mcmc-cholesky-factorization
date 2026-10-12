@@ -6,6 +6,8 @@
 #SBATCH --array=0-4
 #SBATCH --output=slurm_logs/exp2_cam17_rerun_%A_%a.out
 #SBATCH --error=slurm_logs/exp2_cam17_rerun_%A_%a.err
+#SBATCH --partition=a100_short
+#SBATCH --gres=gpu:a100:1
 
 SEED=$SLURM_ARRAY_TASK_ID
 
