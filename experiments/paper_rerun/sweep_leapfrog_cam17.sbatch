@@ -5,7 +5,6 @@
 #SBATCH --time=04:00:00
 #SBATCH --mem=32G
 #SBATCH --cpus-per-task=4
-#SBATCH --partition=batch
 
 REPO_DIR="$HOME/gpc-mcmc-cholesky-factorization"
 DATA_ROOT="$REPO_DIR/experiments/ML-Final-Project/Datasets"
