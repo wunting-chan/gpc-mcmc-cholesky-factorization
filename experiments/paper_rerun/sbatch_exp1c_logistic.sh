@@ -23,6 +23,7 @@ DATA_ROOT="$SCRATCH/gpc-mcmc-cholesky-factorization/experiments/ML-Final-Project
 cd "$REPO_DIR"
 mkdir -p slurm_logs data/paper_rerun/runs
 
+eval "$(conda shell.bash hook)"
 conda activate /gpfs/scratch/sd6701/conda-envs/gpc
 
 export PYTHONPATH="$REPO_DIR/src:$REPO_DIR/experiments:$REPO_DIR/experiments/paper_rerun:$REPO_DIR:$PYTHONPATH"
