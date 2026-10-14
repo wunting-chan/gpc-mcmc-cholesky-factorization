@@ -48,10 +48,17 @@ echo "Node: $(hostname)"
 echo "run id: $RUN_ID   run dir: $RUN_DIR"
 echo "Started at $(date)"
 
+if [ "$DATASET" = "camelyon17" ]; then
+  EVAL_SPLITS="test valid"
+else
+  EVAL_SPLITS="test"
+fi
+
 python experiments/paper_rerun/run_exp2.py \
     --dataset "$DATASET" \
     --data-root "$DATA_ROOT" \
     --seed "$SEED" \
+    --eval-splits $EVAL_SPLITS \
     --run-dir "$RUN_DIR"
 
 echo "=== Finished at $(date) ==="

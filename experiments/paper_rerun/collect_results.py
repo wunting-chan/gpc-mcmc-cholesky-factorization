@@ -10,8 +10,8 @@ Layout each script writes into (see submit_all.sh):
     <batch-dir>/exp1c_logistic/runs/<dataset>/exp1c/seed00N.json
     <batch-dir>/exp2/runs/<dataset>/exp2/seed00N.json
 
-(plus "*_valid" experiment directories when a script's --eval-splits included
-"valid" -- run_exp1_controlled.py does by default).
+(plus "*_valid" experiment directories for camelyon17, which evaluates on both
+test and valid splits; pcam evaluates on test only).
 
 Both exp1c variants write the "exp1c" experiment name (schema.py bakes the
 likelihood into model_architecture / embedding_variant, not into the group
@@ -62,6 +62,25 @@ EXPECTED_LIKELIHOOD = {
 
 RATE_COLUMNS = ["accuracy", "auroc", "auprc", "ece", "brier"]
 NONNEGATIVE_COLUMNS = ["n_train", "n_test", "tp", "fp", "tn", "fn"]
+
+# Per-dataset expected (variant, experiment-group) combos.
+# CAMELYON17 evaluates on test + valid; PCam evaluates on test only.
+_ALL_TEST = {
+    ("exp1", "exp1"),
+    ("exp1c_probit", "exp1c"),
+    ("exp1c_logistic", "exp1c"),
+    ("exp2", "exp2"),
+}
+_CAMELYON17_VALID = {
+    ("exp1", "exp1_valid"),
+    ("exp1c_probit", "exp1c_valid"),
+    ("exp1c_logistic", "exp1c_valid"),
+    ("exp2", "exp2_valid"),
+}
+EXPECTED_BY_DATASET = {
+    "camelyon17": _ALL_TEST | _CAMELYON17_VALID,
+    "pcam": _ALL_TEST,
+}
 
 
 def as_number(value):
@@ -136,6 +155,11 @@ def check_row(row: dict, variant: str, dataset: str, group: str, seed_from_name:
     nll = as_number(row.get("negative_log_likelihood_mean"))
     if nll is not None and nll < 0:
         issues.append(f"negative_log_likelihood_mean negative: {nll}")
+
+    if variant == "exp2":
+        tau = as_number(row.get("tau_logp"))
+        if tau is not None and tau < 0:
+            issues.append(f"tau_logp negative (chain too short?): {tau}")
 
     return issues
 
@@ -220,15 +244,9 @@ def main() -> None:
         if extra:
             group_problems.append(f"{label}: unexpected seed(s) {sorted(extra)}")
 
-    expected_variant_groups = {
-        ("exp1", "exp1"), ("exp1c_probit", "exp1c"), ("exp1c_probit", "exp1c_valid"),
-        ("exp1c_logistic", "exp1c"), ("exp1c_logistic", "exp1c_valid"), ("exp2", "exp2"),
-    }
-    seen_variant_groups = {(v, g) for (v, _d, g) in groups}
     for dataset in sorted({d for (_v, d, _g) in groups}):
-        for variant, group in sorted(expected_variant_groups):
-            if (variant, group) not in seen_variant_groups:
-                continue  # that variant/group combo never showed up for ANY dataset; skip
+        expected_groups = EXPECTED_BY_DATASET.get(dataset, _ALL_TEST)
+        for variant, group in sorted(expected_groups):
             if (variant, dataset, group) not in groups:
                 group_problems.append(f"{variant}/{dataset}/{group}: no runs found at all")
 
