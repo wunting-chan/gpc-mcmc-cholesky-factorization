@@ -21,8 +21,21 @@ SCRATCH="/gpfs/scratch/sd6701"
 REPO_DIR="$SCRATCH/personal/gpc-mcmc-cholesky-factorization"
 DATA_ROOT="$SCRATCH/gpc-mcmc-cholesky-factorization/experiments/ML-Final-Project/Datasets"
 
+# RUN_ID groups this script with sbatch_exp1.sh, sbatch_exp1c_probit.sh and
+# sbatch_exp2.sh into one batch directory; submit_all.sh sets it. Falls back
+# to a timestamp so this script still works submitted standalone. Previously
+# this wrote to a flat data/paper_rerun/runs, which would collide with
+# sbatch_exp1c_probit.sh's seed*.json files (both are the "exp1c" experiment
+# group) -- each likelihood variant now gets its own run-dir.
+if [ -z "${RUN_ID:-}" ]; then
+  RUN_ID="batch-${SLURM_ARRAY_JOB_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
+  echo "WARNING: RUN_ID not supplied; defaulting to ${RUN_ID}." >&2
+fi
+BATCH_DIR="$REPO_DIR/data/paper_rerun/$RUN_ID"
+RUN_DIR="$BATCH_DIR/exp1c_logistic/runs"
+
 cd "$REPO_DIR"
-mkdir -p slurm_logs data/paper_rerun/runs
+mkdir -p slurm_logs "$RUN_DIR"
 
 eval "$(conda shell.bash hook)"
 conda activate /gpfs/scratch/sd6701/conda-envs/gpc
@@ -31,6 +44,7 @@ export PYTHONPATH="$REPO_DIR/src:$REPO_DIR/experiments:$REPO_DIR/experiments/pap
 
 echo "=== Job $SLURM_JOB_ID task $SLURM_ARRAY_TASK_ID: dataset=$DATASET seed=$SEED ==="
 echo "Node: $(hostname), GPU: $CUDA_VISIBLE_DEVICES"
+echo "run id: $RUN_ID   run dir: $RUN_DIR"
 echo "Started at $(date)"
 
 python experiments/paper_rerun/run_exp1_controlled.py \
@@ -39,6 +53,6 @@ python experiments/paper_rerun/run_exp1_controlled.py \
     --seed "$SEED" \
     --eval-splits test valid \
     --likelihood logistic \
-    --run-dir data/paper_rerun/runs
+    --run-dir "$RUN_DIR"
 
 echo "=== Finished at $(date) ==="
